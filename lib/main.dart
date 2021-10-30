@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:keyboard/widget_keyboard/input_keyboard.dart';
+import 'package:keyboard/widget_keyboard/numeric_input_keyboard.dart';
 
 void main() => runApp(const MyApp());
 
@@ -84,6 +84,9 @@ class _MyHomePageState extends State<MyHomePage> {
           return NumericInputKeyboard(
             controller: controller,
             floatingPoint: false,
+            validator: validateNumber,
+            errorText: "Not long enough",
+            labelText: "Long number",
           );
         });
     setState(() {
@@ -91,5 +94,9 @@ class _MyHomePageState extends State<MyHomePage> {
         inputText = txt;
       }
     });
+  }
+
+  Future<bool> validateNumber(String str) async {
+    return str.length > 4;
   }
 }
