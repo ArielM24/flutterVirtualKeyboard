@@ -52,6 +52,14 @@ class _MyHomePageState extends State<MyHomePage> {
             Center(
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
+                child: TextField(
+                  controller: controller,
+                ),
+              ),
+            ),
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
                 child: Text("Password: $inputText"),
               ),
             ),
@@ -70,13 +78,18 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   showInputKeyboard() async {
-    await showModalBottomSheet(
+    String? txt = await showModalBottomSheet<String>(
         context: context,
         builder: (BuildContext context) {
-          return InputKeyboard();
+          return NumericInputKeyboard(
+            controller: controller,
+            floatingPoint: false,
+          );
         });
     setState(() {
-      inputText = InputKeyboard.lastAcceptedText;
+      if (txt != null) {
+        inputText = txt;
+      }
     });
   }
 }

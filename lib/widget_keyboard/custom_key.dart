@@ -1,25 +1,23 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:keyboard/widget_keyboard/key_data.dart';
 import 'package:keyboard/widget_keyboard/key_types.dart';
 
 class CustomKey extends StatefulWidget {
-  final KeyType type;
-  final String text;
-  final ValueSetter<String> onTextCallback;
-  final ValueSetter<String>? onLongTextCallback;
+  final Function(String) onDataInput;
+  final Function(String)? onLongDataInput;
   final int flex;
   final IconData? icon;
   final Function? onSpecialCallback;
-  final Function? onLongSpecialCallback;
+  final KeyData keyData;
 
   const CustomKey(
-      {required this.text,
-      required this.onTextCallback,
-      required this.type,
+      {required this.keyData,
+      required this.onDataInput,
+      this.onLongDataInput,
       this.flex = 1,
       this.icon,
-      this.onLongTextCallback,
       this.onSpecialCallback,
-      this.onLongSpecialCallback,
       Key? key})
       : super(key: key);
 
@@ -41,39 +39,47 @@ class _CustomKeyState extends State<CustomKey> {
           borderRadius: BorderRadius.circular(8),
           child: Listener(
             behavior: HitTestBehavior.opaque,
-            onPointerDown: (PointerDownEvent event) async {
-              debugPrint("pointer down");
-              isPointerDown = true;
-              if (widget.type == KeyType.textKey) {
-                while (isPointerDown) {
-                  widget.onTextCallback.call(widget.text);
-                  await Future.delayed(const Duration(milliseconds: 150));
-                }
-              } else if (widget.type == KeyType.specialKey) {
-                debugPrint("special");
-                if (widget.onSpecialCallback != null) {
-                  debugPrint("not null");
-                  while (isPointerDown) {
-                    widget.onSpecialCallback!();
-                    await Future.delayed(const Duration(milliseconds: 50));
-                  }
-                }
-              }
-            },
+            onPointerDown: (PointerDownEvent event) async =>
+                await onKeepPressed(event),
             onPointerUp: (PointerUpEvent event) {
               debugPrint("pointer");
               isPointerDown = false;
             },
             child: InkWell(
                 onTap: () {},
+                onLongPress: () {
+                  if (widget.onLongDataInput != null) {
+                    widget.onLongDataInput!(widget.keyData.normalText);
+                  }
+                },
                 child: Center(
-                  child: (widget.type == KeyType.specialKey)
-                      ? Icon(widget.icon ?? Icons.auto_fix_off_outlined)
-                      : Text(widget.text),
+                  child: (widget.icon != null)
+                      ? Icon(widget.icon)
+                      : Text(widget.keyData.normalText),
                 )),
           ),
         ),
       ),
     );
+  }
+
+  onKeepPressed(PointerDownEvent event) async {
+    debugPrint("pointer down");
+    isPointerDown = true;
+    if (widget.keyData.type == KeyType.textKey) {
+      while (isPointerDown) {
+        await widget.onDataInput(widget.keyData.normalText);
+        await Future.delayed(const Duration(milliseconds: 150));
+      }
+    } else if (widget.keyData.type == KeyType.specialKey) {
+      debugPrint("special");
+      if (widget.onSpecialCallback != null) {
+        debugPrint("not null");
+        while (isPointerDown) {
+          await widget.onSpecialCallback!();
+          await Future.delayed(const Duration(milliseconds: 50));
+        }
+      }
+    }
   }
 }
