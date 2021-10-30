@@ -4,9 +4,18 @@ import 'package:keyboard/widget_keyboard/key_controller.dart';
 
 class CustomKeyboard extends StatefulWidget {
   final List<List<CustomKey>> rowKeys;
+  final List<List<CustomKey>>? shiftedRowKeys;
   final KeyController? keyController;
+  final Color? color;
+  final Color? switchedColor;
 
-  const CustomKeyboard({this.keyController, required this.rowKeys, Key? key})
+  const CustomKeyboard(
+      {this.shiftedRowKeys,
+      this.keyController,
+      this.color,
+      this.switchedColor,
+      required this.rowKeys,
+      Key? key})
       : super(key: key);
 
   @override
@@ -27,22 +36,40 @@ class _CustomKeyboardState extends State<CustomKeyboard> {
   Color? getColor() {
     if (widget.keyController != null) {
       if (widget.keyController!.isSwitched) {
-        debugPrint("switch 1");
-        return Colors.blue;
+        if (widget.switchedColor != null) {
+          return widget.switchedColor;
+        } else if (widget.color != null) {
+          return widget.color;
+        } else {
+          return Colors.grey[850];
+        }
       } else {
-        debugPrint("switch 2");
-        return Colors.grey[850];
+        if (widget.color != null) {
+          return widget.color;
+        } else {
+          return Colors.grey[850];
+        }
       }
     }
-    debugPrint("switch 3");
-    return Colors.grey[850];
+  }
+
+  List<List<CustomKey>> currentKeys() {
+    if (widget.keyController != null) {
+      if (widget.keyController!.isSwitched) {
+        return widget.shiftedRowKeys ?? widget.rowKeys;
+      } else {
+        return widget.rowKeys;
+      }
+    }
+    return widget.rowKeys;
   }
 
   List<Widget> _rowsBuilder() {
     List<Widget> rows = [];
-    for (int i = 0; i < widget.rowKeys.length; i++) {
+    List<List<CustomKey>> keys = currentKeys();
+    for (int i = 0; i < keys.length; i++) {
       rows.add(Expanded(
-        child: Row(children: widget.rowKeys[i]),
+        child: Row(children: keys[i]),
       ));
     }
     return rows;

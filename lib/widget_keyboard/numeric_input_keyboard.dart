@@ -48,6 +48,7 @@ class _NumericInputKeyboardState extends State<NumericInputKeyboard> {
         keyboard: CustomKeyboard(
           keyController: keyController,
           rowKeys: [..._numericRows(), _deleteRow(), _bottomRow()],
+          shiftedRowKeys: [_deleteRow(), _bottomRow()],
         ),
         controller: widget.controller);
   }
@@ -136,9 +137,6 @@ class _NumericInputKeyboardState extends State<NumericInputKeyboard> {
   }
 
   onFloatingPointInput() {
-    keyController?.alternateKeys();
-    setState(() {});
-
     final text = widget.controller.text;
     if (!text.contains(".")) {
       final newText = text + ".";
