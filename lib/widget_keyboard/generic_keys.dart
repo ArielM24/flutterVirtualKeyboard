@@ -4,8 +4,8 @@ import 'package:keyboard/widget_keyboard/key_types.dart';
 
 class GenericKeys {
   static List<KeyData> numericKeys = [
-    KeyData(type: KeyType.textKey, normalText: "0"),
-    KeyData(type: KeyType.textKey, normalText: "1"),
+    KeyData(type: KeyType.textKey, normalText: "0", alternativeText: "zero"),
+    KeyData(type: KeyType.textKey, normalText: "1", alternativeText: "one"),
     KeyData(type: KeyType.textKey, normalText: "2"),
     KeyData(type: KeyType.textKey, normalText: "3"),
     KeyData(type: KeyType.textKey, normalText: "4"),

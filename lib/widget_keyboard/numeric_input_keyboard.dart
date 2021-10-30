@@ -3,6 +3,7 @@ import 'package:keyboard/widget_keyboard/custom_input_keyboard.dart';
 import 'package:keyboard/widget_keyboard/custom_key.dart';
 import 'package:keyboard/widget_keyboard/custom_keyboard.dart';
 import 'package:keyboard/widget_keyboard/generic_keys.dart';
+import 'package:keyboard/widget_keyboard/key_controller.dart';
 import 'package:keyboard/widget_keyboard/key_data.dart';
 import 'package:keyboard/widget_keyboard/key_types.dart';
 
@@ -29,6 +30,14 @@ class NumericInputKeyboard extends StatefulWidget {
 }
 
 class _NumericInputKeyboardState extends State<NumericInputKeyboard> {
+  KeyController? keyController;
+
+  @override
+  void initState() {
+    super.initState();
+    keyController = KeyController();
+  }
+
   @override
   Widget build(BuildContext context) {
     return CustomInputKeyboard(
@@ -37,8 +46,8 @@ class _NumericInputKeyboardState extends State<NumericInputKeyboard> {
         labelText: widget.labelText,
         errorText: widget.errorText,
         keyboard: CustomKeyboard(
-          rowKeys: [..._numericRows(), _bottomRow()],
-          onDataInput: onNumberInput,
+          keyController: keyController,
+          rowKeys: [..._numericRows(), _deleteRow(), _bottomRow()],
         ),
         controller: widget.controller);
   }
@@ -54,6 +63,7 @@ class _NumericInputKeyboardState extends State<NumericInputKeyboard> {
       List<CustomKey> row = [];
       for (int j = 0; j < 3; j++) {
         row.add(CustomKey(
+          keyController: keyController,
           keyData: GenericKeys.numericKeys[currentKey],
           onDataInput: onNumberInput,
         ));
@@ -64,19 +74,49 @@ class _NumericInputKeyboardState extends State<NumericInputKeyboard> {
     return keys;
   }
 
-  List<CustomKey> _bottomRow() {
+  List<CustomKey> _deleteRow() {
     return <CustomKey>[
       CustomKey(
-          keyData: GenericKeys.numericKeys[0], onDataInput: onNumberInput),
+          keyController: keyController,
+          keyData: GenericKeys.numericKeys[0],
+          onDataInput: onNumberInput),
       if (widget.floatingPoint)
         CustomKey(
+            keyController: keyController,
             keyData: KeyData(type: KeyType.specialKey, normalText: "."),
             onSpecialCallback: onFloatingPointInput,
             onDataInput: (_) async {}),
       CustomKey(
-          keyData: KeyData(type: KeyType.specialKey, normalText: ""),
-          icon: Icons.backspace_outlined,
+          keyController: keyController,
+          keyData: KeyData(
+            type: KeyType.specialKey,
+            normalText: "",
+            normalIcon: Icons.backspace_outlined,
+          ),
           onSpecialCallback: onDeleteCallback,
+          onDataInput: (_) async {}),
+    ];
+  }
+
+  List<CustomKey> _bottomRow() {
+    return <CustomKey>[
+      CustomKey(
+          keyController: keyController,
+          keyData: KeyData(
+              type: KeyType.specialKey,
+              normalText: "",
+              normalIcon: Icons.file_upload_rounded,
+              alternativeIcon: Icons.file_upload_outlined),
+          onSpecialCallback: onShifInput,
+          onDataInput: (_) async {}),
+      CustomKey(
+          keyController: keyController,
+          keyData: KeyData(
+            type: KeyType.specialKey,
+            normalText: "",
+            normalIcon: Icons.double_arrow_sharp,
+          ),
+          onSpecialCallback: onSwitchInput,
           onDataInput: (_) async {}),
     ];
   }
@@ -96,10 +136,23 @@ class _NumericInputKeyboardState extends State<NumericInputKeyboard> {
   }
 
   onFloatingPointInput() {
+    keyController?.alternateKeys();
+    setState(() {});
+
     final text = widget.controller.text;
     if (!text.contains(".")) {
       final newText = text + ".";
       widget.controller.text = newText;
     }
+  }
+
+  onShifInput() {
+    keyController?.alternateKeys();
+    setState(() {});
+  }
+
+  onSwitchInput() {
+    keyController?.switchKeys();
+    setState(() {});
   }
 }

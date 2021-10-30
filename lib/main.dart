@@ -83,7 +83,7 @@ class _MyHomePageState extends State<MyHomePage> {
         builder: (BuildContext context) {
           return NumericInputKeyboard(
             controller: controller,
-            floatingPoint: false,
+            floatingPoint: true,
             validator: validateNumber,
             errorText: "Not long enough",
             labelText: "Long number",

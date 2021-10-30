@@ -1,1 +1,1 @@
-enum KeyType { textKey, specialKey }
+enum KeyType { textKey, specialKey, alternativeKey, switchKey }
