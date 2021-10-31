@@ -7,9 +7,11 @@ class KeyData {
   String? alternativeText;
   IconData? normalIcon;
   IconData? alternativeIcon;
+  bool keepPressed;
 
   KeyData(
       {this.normalIcon,
+      this.keepPressed = true,
       this.alternativeIcon,
       required this.type,
       required this.normalText,

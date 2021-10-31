@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 
-class KeyController with ChangeNotifier {
-  KeyController() : super();
+class KeyboardController with ChangeNotifier {
+  KeyboardController() : super();
 
   bool _isAlternativeActive = false;
   bool _isSwitched = false;

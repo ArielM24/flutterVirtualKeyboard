@@ -30,12 +30,12 @@ class NumericInputKeyboard extends StatefulWidget {
 }
 
 class _NumericInputKeyboardState extends State<NumericInputKeyboard> {
-  KeyController? keyController;
+  KeyboardController? keyboardController;
 
   @override
   void initState() {
     super.initState();
-    keyController = KeyController();
+    keyboardController = KeyboardController();
   }
 
   @override
@@ -46,7 +46,7 @@ class _NumericInputKeyboardState extends State<NumericInputKeyboard> {
         labelText: widget.labelText,
         errorText: widget.errorText,
         keyboard: CustomKeyboard(
-          keyController: keyController,
+          keyboardController: keyboardController,
           rowKeys: [..._numericRows(), _deleteRow(), _bottomRow()],
           shiftedRowKeys: [_deleteRow(), _bottomRow()],
         ),
@@ -64,7 +64,7 @@ class _NumericInputKeyboardState extends State<NumericInputKeyboard> {
       List<CustomKey> row = [];
       for (int j = 0; j < 3; j++) {
         row.add(CustomKey(
-          keyController: keyController,
+          keyboardController: keyboardController,
           keyData: GenericKeys.numericKeys[currentKey],
           onDataInput: onNumberInput,
         ));
@@ -78,17 +78,17 @@ class _NumericInputKeyboardState extends State<NumericInputKeyboard> {
   List<CustomKey> _deleteRow() {
     return <CustomKey>[
       CustomKey(
-          keyController: keyController,
+          keyboardController: keyboardController,
           keyData: GenericKeys.numericKeys[0],
           onDataInput: onNumberInput),
       if (widget.floatingPoint)
         CustomKey(
-            keyController: keyController,
+            keyboardController: keyboardController,
             keyData: KeyData(type: KeyType.specialKey, normalText: "."),
             onSpecialCallback: onFloatingPointInput,
             onDataInput: (_) async {}),
       CustomKey(
-          keyController: keyController,
+          keyboardController: keyboardController,
           keyData: KeyData(
             type: KeyType.specialKey,
             normalText: "",
@@ -102,18 +102,20 @@ class _NumericInputKeyboardState extends State<NumericInputKeyboard> {
   List<CustomKey> _bottomRow() {
     return <CustomKey>[
       CustomKey(
-          keyController: keyController,
+          keyboardController: keyboardController,
+          onSpecialCallback: onShiftInput,
           keyData: KeyData(
+              keepPressed: false,
               type: KeyType.specialKey,
               normalText: "",
               normalIcon: Icons.file_upload_rounded,
               alternativeIcon: Icons.file_upload_outlined),
-          onSpecialCallback: onShifInput,
           onDataInput: (_) async {}),
       CustomKey(
-          keyController: keyController,
+          keyboardController: keyboardController,
           keyData: KeyData(
             type: KeyType.specialKey,
+            keepPressed: false,
             normalText: "",
             normalIcon: Icons.double_arrow_sharp,
           ),
@@ -144,13 +146,13 @@ class _NumericInputKeyboardState extends State<NumericInputKeyboard> {
     }
   }
 
-  onShifInput() {
-    keyController?.alternateKeys();
+  onShiftInput() {
+    keyboardController?.alternateKeys();
     setState(() {});
   }
 
   onSwitchInput() {
-    keyController?.switchKeys();
+    keyboardController?.switchKeys();
     setState(() {});
   }
 }

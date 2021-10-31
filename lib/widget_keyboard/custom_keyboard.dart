@@ -5,13 +5,13 @@ import 'package:keyboard/widget_keyboard/key_controller.dart';
 class CustomKeyboard extends StatefulWidget {
   final List<List<CustomKey>> rowKeys;
   final List<List<CustomKey>>? shiftedRowKeys;
-  final KeyController? keyController;
+  final KeyboardController? keyboardController;
   final Color? color;
   final Color? switchedColor;
 
   const CustomKeyboard(
       {this.shiftedRowKeys,
-      this.keyController,
+      this.keyboardController,
       this.color,
       this.switchedColor,
       required this.rowKeys,
@@ -34,8 +34,8 @@ class _CustomKeyboardState extends State<CustomKeyboard> {
   }
 
   Color? getColor() {
-    if (widget.keyController != null) {
-      if (widget.keyController!.isSwitched) {
+    if (widget.keyboardController != null) {
+      if (widget.keyboardController!.isSwitched) {
         if (widget.switchedColor != null) {
           return widget.switchedColor;
         } else if (widget.color != null) {
@@ -54,8 +54,8 @@ class _CustomKeyboardState extends State<CustomKeyboard> {
   }
 
   List<List<CustomKey>> currentKeys() {
-    if (widget.keyController != null) {
-      if (widget.keyController!.isSwitched) {
+    if (widget.keyboardController != null) {
+      if (widget.keyboardController!.isSwitched) {
         return widget.shiftedRowKeys ?? widget.rowKeys;
       } else {
         return widget.rowKeys;

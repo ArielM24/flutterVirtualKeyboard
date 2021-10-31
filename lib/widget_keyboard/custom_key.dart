@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:keyboard/widget_keyboard/key_controller.dart';
@@ -12,13 +10,13 @@ class CustomKey extends StatefulWidget {
   final int flex;
   final Function? onSpecialCallback;
   final KeyData keyData;
-  final KeyController? keyController;
+  final KeyboardController? keyboardController;
 
   const CustomKey(
       {required this.keyData,
       required this.onDataInput,
       this.onLongDataInput,
-      this.keyController,
+      this.keyboardController,
       this.flex = 1,
       this.onSpecialCallback,
       Key? key})
@@ -45,7 +43,6 @@ class _CustomKeyState extends State<CustomKey> {
             onPointerDown: (PointerDownEvent event) async =>
                 await onKeepPressed(event),
             onPointerUp: (PointerUpEvent event) {
-              debugPrint("pointer");
               isPointerDown = false;
             },
             child: InkWell(
@@ -65,28 +62,24 @@ class _CustomKeyState extends State<CustomKey> {
   }
 
   String currenText() {
-    if (widget.keyController != null) {
-      if (widget.keyController!.isAlternativeActive) {
+    if (widget.keyboardController != null) {
+      if (widget.keyboardController!.isAlternativeActive) {
         if (widget.keyData.alternativeText != null) {
-          debugPrint("case 4");
           return (widget.keyData.alternativeText!);
         } else {
-          debugPrint("case 5");
           return (widget.keyData.normalText);
         }
       } else {
-        debugPrint("case 6");
         return (widget.keyData.normalText);
       }
     } else {
-      debugPrint("case 7");
       return (widget.keyData.normalText);
     }
   }
 
   IconData? currentIcon() {
-    if (widget.keyController != null) {
-      if (widget.keyController!.isAlternativeActive) {
+    if (widget.keyboardController != null) {
+      if (widget.keyboardController!.isAlternativeActive) {
         return widget.keyData.alternativeIcon ?? widget.keyData.normalIcon;
       } else {
         return widget.keyData.normalIcon;
@@ -98,7 +91,6 @@ class _CustomKeyState extends State<CustomKey> {
   Widget labelWidget() {
     IconData? iconData = currentIcon();
     if (iconData != null) {
-      debugPrint("case 1");
       return Icon(iconData);
     } else {
       return Text(currenText());
@@ -106,7 +98,6 @@ class _CustomKeyState extends State<CustomKey> {
   }
 
   onKeepPressed(PointerDownEvent event) async {
-    debugPrint("pointer down");
     isPointerDown = true;
     if (widget.keyData.type == KeyType.textKey) {
       while (isPointerDown) {
@@ -114,11 +105,12 @@ class _CustomKeyState extends State<CustomKey> {
         await Future.delayed(const Duration(milliseconds: 150));
       }
     } else if (widget.keyData.type == KeyType.specialKey) {
-      debugPrint("special");
       if (widget.onSpecialCallback != null) {
-        debugPrint("not null");
         while (isPointerDown) {
           await widget.onSpecialCallback!();
+          if (!widget.keyData.keepPressed) {
+            break;
+          }
           await Future.delayed(const Duration(milliseconds: 50));
         }
       }
