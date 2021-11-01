@@ -45,8 +45,28 @@ class _CustomKeyState extends State<CustomKey> {
             borderRadius: widget.radius ?? BorderRadius.circular(8),
           ),
           child: Stack(
-            clipBehavior: Clip.none,
             children: [
+              Listener(
+                behavior: HitTestBehavior.opaque,
+                onPointerDown: (PointerDownEvent event) async =>
+                    await onKeepPressed(event),
+                onPointerUp: (PointerUpEvent event) {
+                  isPointerDown = false;
+                },
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                      onTap: () {},
+                      onLongPress: () {
+                        if (widget.onLongDataInput != null) {
+                          widget.onLongDataInput!(widget.keyData.normalText);
+                        }
+                      },
+                      child: Center(
+                        child: labelWidget(),
+                      )),
+                ),
+              ),
               if (widget.keyData.shiftedText != null)
                 Positioned(
                   child: Text(
@@ -63,24 +83,6 @@ class _CustomKeyState extends State<CustomKey> {
                   right: 5,
                   bottom: 5,
                 ),
-              Listener(
-                behavior: HitTestBehavior.opaque,
-                onPointerDown: (PointerDownEvent event) async =>
-                    await onKeepPressed(event),
-                onPointerUp: (PointerUpEvent event) {
-                  isPointerDown = false;
-                },
-                child: InkWell(
-                    onTap: () {},
-                    onLongPress: () {
-                      if (widget.onLongDataInput != null) {
-                        widget.onLongDataInput!(widget.keyData.normalText);
-                      }
-                    },
-                    child: Center(
-                      child: labelWidget(),
-                    )),
-              ),
             ],
           ),
         ),
@@ -184,11 +186,11 @@ class _CustomKeyState extends State<CustomKey> {
 
   Color? getKeyColor() {
     if (widget.keyboardController != null) {
-      if (widget.keyboardController!.isAlternativeActive) {
-        return widget.keyData.altKeyColor;
-      }
       if (widget.keyboardController!.isShiftActive) {
         return widget.keyData.shiftKeyColor;
+      }
+      if (widget.keyboardController!.isAlternativeActive) {
+        return widget.keyData.altKeyColor;
       }
     }
     return widget.keyData.keyColor;
