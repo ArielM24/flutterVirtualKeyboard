@@ -76,7 +76,11 @@ class _QwertInputKeyboardState extends State<QwertInputKeyboard> {
               type: KeyType.specialKey,
               normalText: "",
               normalIcon: Icons.file_upload_rounded,
-              alternativeIcon: Icons.file_upload_outlined),
+              shiftedIcon: Icons.file_upload_outlined),
+          onDataInput: (_) async {}),
+      CustomKey(
+          keyData: KeyData(type: KeyType.specialKey, normalText: "Alt"),
+          onSpecialCallback: onAlternateInput,
           onDataInput: (_) async {}),
       CustomKey(
           keyData: KeyData(
@@ -110,6 +114,11 @@ class _QwertInputKeyboardState extends State<QwertInputKeyboard> {
   }
 
   onShiftInput() {
+    keyboardController?.shiftKeys();
+    setState(() {});
+  }
+
+  onAlternateInput() {
     keyboardController?.alternateKeys();
     setState(() {});
   }

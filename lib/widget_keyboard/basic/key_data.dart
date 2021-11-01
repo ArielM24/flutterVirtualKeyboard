@@ -4,16 +4,18 @@ import 'package:keyboard/widget_keyboard/basic/key_types.dart';
 class KeyData {
   KeyType type;
   String normalText;
+  String? shiftedText;
   String? alternativeText;
   IconData? normalIcon;
-  IconData? alternativeIcon;
+  IconData? shiftedIcon;
   bool keepPressed;
 
   KeyData(
       {this.normalIcon,
       this.keepPressed = true,
-      this.alternativeIcon,
+      this.shiftedIcon,
+      this.alternativeText,
       required this.type,
       required this.normalText,
-      this.alternativeText});
+      this.shiftedText});
 }

@@ -48,13 +48,21 @@ class _CustomKeyState extends State<CustomKey> {
           child: Stack(
             clipBehavior: Clip.none,
             children: [
+              if (widget.keyData.shiftedText != null)
+                Positioned(
+                  child: Text(
+                    currentShifted(),
+                  ),
+                  right: 5,
+                  top: 5,
+                ),
               if (widget.keyData.alternativeText != null)
                 Positioned(
                   child: Text(
                     currentAlternative(),
                   ),
                   right: 5,
-                  top: 5,
+                  bottom: 5,
                 ),
               Listener(
                 behavior: HitTestBehavior.opaque,
@@ -82,11 +90,29 @@ class _CustomKeyState extends State<CustomKey> {
   }
 
   String currentAlternative() {
-    if (widget.keyboardController!.isAlternativeActive) {
+    if (widget.keyboardController != null) {
+      if (widget.keyboardController!.isAlternativeActive) {
+        if (widget.keyboardController!.isShiftActive) {
+          if (widget.keyData.shiftedText != null) {
+            return widget.keyData.shiftedText!;
+          }
+        }
+        return widget.keyData.normalText;
+      } else {
+        if (widget.keyData.alternativeText != null) {
+          return widget.keyData.alternativeText!;
+        }
+      }
+    }
+    return "";
+  }
+
+  String currentShifted() {
+    if (widget.keyboardController!.isShiftActive) {
       return (widget.keyData.normalText);
     } else {
-      if (widget.keyData.alternativeText != null) {
-        return (widget.keyData.alternativeText!);
+      if (widget.keyData.shiftedText != null) {
+        return (widget.keyData.shiftedText!);
       } else {
         return "";
       }
@@ -97,7 +123,12 @@ class _CustomKeyState extends State<CustomKey> {
     if (widget.keyboardController != null) {
       if (widget.keyboardController!.isAlternativeActive) {
         if (widget.keyData.alternativeText != null) {
-          return (widget.keyData.alternativeText!);
+          return widget.keyData.alternativeText!;
+        }
+      }
+      if (widget.keyboardController!.isShiftActive) {
+        if (widget.keyData.shiftedText != null) {
+          return (widget.keyData.shiftedText!);
         } else {
           return (widget.keyData.normalText);
         }
@@ -111,8 +142,8 @@ class _CustomKeyState extends State<CustomKey> {
 
   IconData? currentIcon() {
     if (widget.keyboardController != null) {
-      if (widget.keyboardController!.isAlternativeActive) {
-        return widget.keyData.alternativeIcon ?? widget.keyData.normalIcon;
+      if (widget.keyboardController!.isShiftActive) {
+        return widget.keyData.shiftedIcon ?? widget.keyData.normalIcon;
       } else {
         return widget.keyData.normalIcon;
       }
@@ -127,7 +158,7 @@ class _CustomKeyState extends State<CustomKey> {
     } else {
       return Text(
         currenText(),
-        style: TextStyle(fontSize: 23),
+        style: const TextStyle(fontSize: 23),
       );
     }
   }
