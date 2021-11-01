@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:keyboard/widget_keyboard/numeric_input_keyboard.dart';
+import 'package:keyboard/widget_keyboard/qwerty_input_keyboard.dart';
 
 void main() => runApp(const MyApp());
 
@@ -67,7 +68,7 @@ class _MyHomePageState extends State<MyHomePage> {
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: ElevatedButton(
-                    onPressed: showInputKeyboard,
+                    onPressed: showQwertyKeyboard,
                     child: const Text("Enter password")),
               ),
             ),
@@ -82,7 +83,7 @@ class _MyHomePageState extends State<MyHomePage> {
         context: context,
         builder: (BuildContext context) {
           return NumericInputKeyboard(
-            controller: controller,
+            textController: controller,
             floatingPoint: true,
             validator: validateNumber,
             errorText: "Not long enough",
@@ -98,5 +99,27 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<bool> validateNumber(String str) async {
     return str.length > 4;
+  }
+
+  showQwertyKeyboard() async {
+    String? txt = await showModalBottomSheet<String>(
+        context: context,
+        builder: (BuildContext context) {
+          return QwertInputKeyboard(
+            textController: controller,
+            validator: validateText,
+            errorText: "Empty text",
+            labelText: "Text",
+          );
+        });
+    if (txt != null) {
+      setState(() {
+        inputText = txt;
+      });
+    }
+  }
+
+  Future<bool> validateText(String str) async {
+    return str.isNotEmpty;
   }
 }

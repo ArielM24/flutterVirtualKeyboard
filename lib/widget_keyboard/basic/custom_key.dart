@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:keyboard/widget_keyboard/key_controller.dart';
-import 'package:keyboard/widget_keyboard/key_data.dart';
-import 'package:keyboard/widget_keyboard/key_types.dart';
+import 'package:keyboard/widget_keyboard/basic/key_controller.dart';
+import 'package:keyboard/widget_keyboard/basic/key_data.dart';
+import 'package:keyboard/widget_keyboard/basic/key_types.dart';
 
 class CustomKey extends StatefulWidget {
   final Function(String) onDataInput;
@@ -11,6 +11,8 @@ class CustomKey extends StatefulWidget {
   final Function? onSpecialCallback;
   final KeyData keyData;
   final KeyboardController? keyboardController;
+  final BoxDecoration? decoration;
+  final EdgeInsets padding;
 
   const CustomKey(
       {required this.keyData,
@@ -19,6 +21,8 @@ class CustomKey extends StatefulWidget {
       this.keyboardController,
       this.flex = 1,
       this.onSpecialCallback,
+      this.decoration,
+      this.padding = const EdgeInsets.all(3.0),
       Key? key})
       : super(key: key);
 
@@ -34,31 +38,59 @@ class _CustomKeyState extends State<CustomKey> {
     return Expanded(
       flex: widget.flex,
       child: Padding(
-        padding: const EdgeInsets.all(3.0),
-        child: Material(
-          color: Colors.grey,
-          borderRadius: BorderRadius.circular(8),
-          child: Listener(
-            behavior: HitTestBehavior.opaque,
-            onPointerDown: (PointerDownEvent event) async =>
-                await onKeepPressed(event),
-            onPointerUp: (PointerUpEvent event) {
-              isPointerDown = false;
-            },
-            child: InkWell(
-                onTap: () {},
-                onLongPress: () {
-                  if (widget.onLongDataInput != null) {
-                    widget.onLongDataInput!(widget.keyData.normalText);
-                  }
+        padding: widget.padding,
+        child: Container(
+          decoration: widget.decoration ??
+              BoxDecoration(
+                color: Colors.grey,
+                borderRadius: BorderRadius.circular(8),
+              ),
+          child: Stack(
+            clipBehavior: Clip.none,
+            children: [
+              if (widget.keyData.alternativeText != null)
+                Positioned(
+                  child: Text(
+                    currentAlternative(),
+                  ),
+                  right: 5,
+                  top: 5,
+                ),
+              Listener(
+                behavior: HitTestBehavior.opaque,
+                onPointerDown: (PointerDownEvent event) async =>
+                    await onKeepPressed(event),
+                onPointerUp: (PointerUpEvent event) {
+                  isPointerDown = false;
                 },
-                child: Center(
-                  child: labelWidget(),
-                )),
+                child: InkWell(
+                    onTap: () {},
+                    onLongPress: () {
+                      if (widget.onLongDataInput != null) {
+                        widget.onLongDataInput!(widget.keyData.normalText);
+                      }
+                    },
+                    child: Center(
+                      child: labelWidget(),
+                    )),
+              ),
+            ],
           ),
         ),
       ),
     );
+  }
+
+  String currentAlternative() {
+    if (widget.keyboardController!.isAlternativeActive) {
+      return (widget.keyData.normalText);
+    } else {
+      if (widget.keyData.alternativeText != null) {
+        return (widget.keyData.alternativeText!);
+      } else {
+        return "";
+      }
+    }
   }
 
   String currenText() {
@@ -93,7 +125,10 @@ class _CustomKeyState extends State<CustomKey> {
     if (iconData != null) {
       return Icon(iconData);
     } else {
-      return Text(currenText());
+      return Text(
+        currenText(),
+        style: TextStyle(fontSize: 23),
+      );
     }
   }
 

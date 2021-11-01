@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:keyboard/widget_keyboard/key_types.dart';
+import 'package:keyboard/widget_keyboard/basic/key_types.dart';
 
 class KeyData {
   KeyType type;

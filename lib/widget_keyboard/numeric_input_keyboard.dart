@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:keyboard/widget_keyboard/custom_input_keyboard.dart';
-import 'package:keyboard/widget_keyboard/custom_key.dart';
-import 'package:keyboard/widget_keyboard/custom_keyboard.dart';
-import 'package:keyboard/widget_keyboard/generic_keys.dart';
-import 'package:keyboard/widget_keyboard/key_controller.dart';
-import 'package:keyboard/widget_keyboard/key_data.dart';
-import 'package:keyboard/widget_keyboard/key_types.dart';
+import 'package:keyboard/widget_keyboard/basic/custom_input_keyboard.dart';
+import 'package:keyboard/widget_keyboard/basic/custom_key.dart';
+import 'package:keyboard/widget_keyboard/basic/custom_keyboard.dart';
+import 'package:keyboard/widget_keyboard/basic/generic_keys.dart';
+import 'package:keyboard/widget_keyboard/basic/key_controller.dart';
+import 'package:keyboard/widget_keyboard/basic/key_data.dart';
+import 'package:keyboard/widget_keyboard/basic/key_types.dart';
 
 class NumericInputKeyboard extends StatefulWidget {
   final bool floatingPoint;
-  final TextEditingController controller;
+  final TextEditingController textController;
   final String labelText;
   final String errorText;
   final Function(BuildContext)? onSubmit;
   final Future<bool> Function(String)? validator;
 
   const NumericInputKeyboard(
-      {required this.controller,
+      {required this.textController,
       this.onSubmit,
       this.validator,
       this.labelText = "",
@@ -47,10 +47,9 @@ class _NumericInputKeyboardState extends State<NumericInputKeyboard> {
         errorText: widget.errorText,
         keyboard: CustomKeyboard(
           keyboardController: keyboardController,
-          rowKeys: [..._numericRows(), _deleteRow(), _bottomRow()],
-          shiftedRowKeys: [_deleteRow(), _bottomRow()],
+          rowKeys: [..._numericRows(), _deleteRow()],
         ),
-        controller: widget.controller);
+        textController: widget.textController);
   }
 
   Future<bool> validator(String text) async {
@@ -99,60 +98,25 @@ class _NumericInputKeyboardState extends State<NumericInputKeyboard> {
     ];
   }
 
-  List<CustomKey> _bottomRow() {
-    return <CustomKey>[
-      CustomKey(
-          keyboardController: keyboardController,
-          onSpecialCallback: onShiftInput,
-          keyData: KeyData(
-              keepPressed: false,
-              type: KeyType.specialKey,
-              normalText: "",
-              normalIcon: Icons.file_upload_rounded,
-              alternativeIcon: Icons.file_upload_outlined),
-          onDataInput: (_) async {}),
-      CustomKey(
-          keyboardController: keyboardController,
-          keyData: KeyData(
-            type: KeyType.specialKey,
-            keepPressed: false,
-            normalText: "",
-            normalIcon: Icons.double_arrow_sharp,
-          ),
-          onSpecialCallback: onSwitchInput,
-          onDataInput: (_) async {}),
-    ];
-  }
-
   onNumberInput(String keyText) {
-    final text = widget.controller.text;
+    final text = widget.textController.text;
     final newText = text + keyText;
-    widget.controller.text = newText;
+    widget.textController.text = newText;
   }
 
   onDeleteCallback() {
-    final text = widget.controller.text;
+    final text = widget.textController.text;
     if (text.isNotEmpty) {
       final newText = text.substring(0, text.length - 1);
-      widget.controller.text = newText;
+      widget.textController.text = newText;
     }
   }
 
   onFloatingPointInput() {
-    final text = widget.controller.text;
+    final text = widget.textController.text;
     if (!text.contains(".")) {
       final newText = text + ".";
-      widget.controller.text = newText;
+      widget.textController.text = newText;
     }
-  }
-
-  onShiftInput() {
-    keyboardController?.alternateKeys();
-    setState(() {});
-  }
-
-  onSwitchInput() {
-    keyboardController?.switchKeys();
-    setState(() {});
   }
 }
