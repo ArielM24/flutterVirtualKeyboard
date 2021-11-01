@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:keyboard/widget_keyboard/basic/key_data.dart';
 import 'package:keyboard/widget_keyboard/basic/key_types.dart';
 
@@ -33,12 +34,14 @@ class GenericKeys {
     [
       KeyData(
           type: KeyType.textKey,
+          altTextColor: Colors.grey[200],
           normalText: "q",
           shiftedText: "Q",
           alternativeText: "@"),
       KeyData(type: KeyType.textKey, normalText: "w", shiftedText: "W"),
       KeyData(
           type: KeyType.textKey,
+          altTextColor: Colors.grey[200],
           normalText: "e",
           shiftedText: "E",
           alternativeText: "€"),

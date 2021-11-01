@@ -72,15 +72,20 @@ class _QwertInputKeyboardState extends State<QwertInputKeyboard> {
           keyboardController: keyboardController,
           onSpecialCallback: onShiftInput,
           keyData: KeyData(
-              keepPressed: false,
-              type: KeyType.shiftKey,
-              normalText: "",
-              normalIcon: Icons.file_upload_rounded,
-              shiftedIcon: Icons.file_upload_outlined),
+            keepPressed: false,
+            type: KeyType.shiftKey,
+            shiftKeyColor: Colors.grey[350],
+            normalText: "",
+            normalIcon: Icons.file_upload_rounded,
+          ),
           onDataInput: (_) async {}),
       CustomKey(
           keyboardController: keyboardController,
-          keyData: KeyData(type: KeyType.altKey, normalText: "Alt"),
+          keyData: KeyData(
+              type: KeyType.altKey,
+              normalText: "Alt",
+              keepPressed: false,
+              altKeyColor: Colors.grey[350]),
           onSpecialCallback: onAlternateInput,
           onDataInput: (_) async {}),
       CustomKey(

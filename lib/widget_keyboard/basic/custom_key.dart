@@ -13,16 +13,10 @@ class CustomKey extends StatefulWidget {
   final KeyboardController? keyboardController;
   final BorderRadius? radius;
   final EdgeInsets padding;
-  final Color? keyColor;
-  final Color? altKeyColor;
-  final Color? shiftKeyColor;
 
   const CustomKey(
       {required this.keyData,
       required this.onDataInput,
-      this.keyColor,
-      this.altKeyColor,
-      this.shiftKeyColor,
       this.onLongDataInput,
       this.keyboardController,
       this.flex = 1,
@@ -163,7 +157,7 @@ class _CustomKeyState extends State<CustomKey> {
     } else {
       return Text(
         currenText(),
-        style: const TextStyle(fontSize: 23),
+        style: TextStyle(fontSize: 23, color: getTextColor()),
       );
     }
   }
@@ -189,27 +183,26 @@ class _CustomKeyState extends State<CustomKey> {
   }
 
   Color? getKeyColor() {
-    Map<KeyType, Color?> keyColor = {
-      KeyType.altKey: widget.altKeyColor ?? Colors.grey[350],
-      KeyType.shiftKey: widget.shiftKeyColor ?? Colors.grey[350],
-      KeyType.specialKey: widget.keyColor ?? Colors.grey,
-      KeyType.textKey: widget.altKeyColor ?? Colors.grey,
-    };
     if (widget.keyboardController != null) {
       if (widget.keyboardController!.isAlternativeActive) {
-        debugPrint("${widget.keyData.type}");
-        if (widget.keyData.type == KeyType.altKey) {
-          debugPrint("alt");
-          return keyColor[KeyType.altKey];
-        }
+        return widget.keyData.altKeyColor;
       }
       if (widget.keyboardController!.isShiftActive) {
-        if (widget.keyData.type == KeyType.shiftKey) {
-          debugPrint("sft");
-          return keyColor[KeyType.shiftKey];
-        }
+        return widget.keyData.shiftKeyColor;
       }
     }
-    return keyColor[KeyType.textKey];
+    return widget.keyData.keyColor;
+  }
+
+  Color? getTextColor() {
+    if (widget.keyboardController != null) {
+      if (widget.keyboardController!.isAlternativeActive) {
+        return widget.keyData.altTextColor;
+      }
+      if (widget.keyboardController!.isShiftActive) {
+        return widget.keyData.shiftTextColor;
+      }
+    }
+    return widget.keyData.textColor;
   }
 }
