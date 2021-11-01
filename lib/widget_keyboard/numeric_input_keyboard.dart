@@ -3,7 +3,7 @@ import 'package:keyboard/widget_keyboard/basic/custom_input_keyboard.dart';
 import 'package:keyboard/widget_keyboard/basic/custom_key.dart';
 import 'package:keyboard/widget_keyboard/basic/custom_keyboard.dart';
 import 'package:keyboard/widget_keyboard/basic/generic_keys.dart';
-import 'package:keyboard/widget_keyboard/basic/key_controller.dart';
+import 'package:keyboard/widget_keyboard/basic/keyboard_controller.dart';
 import 'package:keyboard/widget_keyboard/basic/key_data.dart';
 import 'package:keyboard/widget_keyboard/basic/key_types.dart';
 

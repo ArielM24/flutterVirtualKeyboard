@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:keyboard/widget_keyboard/basic/custom_key.dart';
-import 'package:keyboard/widget_keyboard/basic/key_controller.dart';
+import 'package:keyboard/widget_keyboard/basic/keyboard_controller.dart';
 
 class CustomKeyboard extends StatefulWidget {
   final List<List<CustomKey>> rowKeys;

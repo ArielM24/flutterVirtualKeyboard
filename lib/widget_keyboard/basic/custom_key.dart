@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:keyboard/widget_keyboard/basic/key_controller.dart';
+import 'package:keyboard/widget_keyboard/basic/keyboard_controller.dart';
 import 'package:keyboard/widget_keyboard/basic/key_data.dart';
 import 'package:keyboard/widget_keyboard/basic/key_types.dart';
 
@@ -11,17 +11,23 @@ class CustomKey extends StatefulWidget {
   final Function? onSpecialCallback;
   final KeyData keyData;
   final KeyboardController? keyboardController;
-  final BoxDecoration? decoration;
+  final BorderRadius? radius;
   final EdgeInsets padding;
+  final Color? keyColor;
+  final Color? altKeyColor;
+  final Color? shiftKeyColor;
 
   const CustomKey(
       {required this.keyData,
       required this.onDataInput,
+      this.keyColor,
+      this.altKeyColor,
+      this.shiftKeyColor,
       this.onLongDataInput,
       this.keyboardController,
       this.flex = 1,
       this.onSpecialCallback,
-      this.decoration,
+      this.radius,
       this.padding = const EdgeInsets.all(3.0),
       Key? key})
       : super(key: key);
@@ -40,11 +46,10 @@ class _CustomKeyState extends State<CustomKey> {
       child: Padding(
         padding: widget.padding,
         child: Container(
-          decoration: widget.decoration ??
-              BoxDecoration(
-                color: Colors.grey,
-                borderRadius: BorderRadius.circular(8),
-              ),
+          decoration: BoxDecoration(
+            color: getKeyColor(),
+            borderRadius: widget.radius ?? BorderRadius.circular(8),
+          ),
           child: Stack(
             clipBehavior: Clip.none,
             children: [
@@ -170,7 +175,7 @@ class _CustomKeyState extends State<CustomKey> {
         await widget.onDataInput(currenText());
         await Future.delayed(const Duration(milliseconds: 150));
       }
-    } else if (widget.keyData.type == KeyType.specialKey) {
+    } else {
       if (widget.onSpecialCallback != null) {
         while (isPointerDown) {
           await widget.onSpecialCallback!();
@@ -181,5 +186,30 @@ class _CustomKeyState extends State<CustomKey> {
         }
       }
     }
+  }
+
+  Color? getKeyColor() {
+    Map<KeyType, Color?> keyColor = {
+      KeyType.altKey: widget.altKeyColor ?? Colors.grey[350],
+      KeyType.shiftKey: widget.shiftKeyColor ?? Colors.grey[350],
+      KeyType.specialKey: widget.keyColor ?? Colors.grey,
+      KeyType.textKey: widget.altKeyColor ?? Colors.grey,
+    };
+    if (widget.keyboardController != null) {
+      if (widget.keyboardController!.isAlternativeActive) {
+        debugPrint("${widget.keyData.type}");
+        if (widget.keyData.type == KeyType.altKey) {
+          debugPrint("alt");
+          return keyColor[KeyType.altKey];
+        }
+      }
+      if (widget.keyboardController!.isShiftActive) {
+        if (widget.keyData.type == KeyType.shiftKey) {
+          debugPrint("sft");
+          return keyColor[KeyType.shiftKey];
+        }
+      }
+    }
+    return keyColor[KeyType.textKey];
   }
 }
